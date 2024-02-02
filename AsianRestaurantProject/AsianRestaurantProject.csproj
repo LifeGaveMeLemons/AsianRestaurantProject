@@ -10,7 +10,6 @@
     <Folder Include="Data\Authentication\" />
     <Folder Include="Data\Users\" />
     <Folder Include="wwwroot\Assets\Icon\" />
-    <Folder Include="wwwroot\Assets\FoodIcons\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 

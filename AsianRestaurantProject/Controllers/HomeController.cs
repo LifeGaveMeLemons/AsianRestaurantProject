@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Authentication;
+using Microsoft.Data.SqlClient;
 
 namespace AsianRestaurantProject.Controllers
 {
@@ -16,7 +17,16 @@ namespace AsianRestaurantProject.Controllers
 
 		public IActionResult Index()
 		{
+            ViewData["LoggedOn"] = "user";
 			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1) });
+        }
+		private static string IsAuthenticated(IRequestCookieCollection cookies)
+		{
+			return "t";
+			SQLConn
+			if (cookies["auth"] == "true")
+			{
+			}
 		}
 
 

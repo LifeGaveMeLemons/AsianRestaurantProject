@@ -3,6 +3,8 @@
 @{
     foreach (DataElementModel element in Model)
     {
-        <div> @element.name <img src="./Assets/F"/> </div>
+
+        <div> @element.ind @element.name <img src="@($"./Assets/FoodIcons/Food{element.ind.ToString()}.png")"/> </div>
     }
+
 }
