@@ -1,6 +1,7 @@
 ﻿using AsianRestaurantProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Authentication;
 
 namespace AsianRestaurantProject.Controllers
 {
@@ -15,13 +16,9 @@ namespace AsianRestaurantProject.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1) });
 		}
 
-		public IActionResult Privacy()
-		{
-			return View();
-		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

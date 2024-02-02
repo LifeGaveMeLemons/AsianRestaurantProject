@@ -1,1 +1,8 @@
-﻿<div style="background-color;:aqua; height: 50px; width:50px;"></div>
+﻿@model List<AsianRestaurantProject.Models.DataElementModel>
+
+@{
+    foreach (DataElementModel element in Model)
+    {
+        <div> @element.name <img src="./Assets/F"/> </div>
+    }
+}
