@@ -1,0 +1,1 @@
+﻿INSERT INTO users (users.id,users.password,users.forename,users.lastname) VALUES (@email,@password,@Name,@lastName)

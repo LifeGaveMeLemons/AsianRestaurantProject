@@ -12,8 +12,6 @@ namespace AsianRestaurantProject.Models
 
         public AuthenticationJsonModel(string inputCookie)
         {
-            JsonObject obj = new JsonObject(inputCookie["auth"]);
-            JsonConverter con = new JsonConverter(inputCookie[""])
 
         }
 //        {
