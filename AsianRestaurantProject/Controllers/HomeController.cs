@@ -26,6 +26,7 @@ namespace AsianRestaurantProject.Controllers
 		}
 		public IActionResult Index()
 		{
+			Console.WriteLine("rkfjfiuherfuiyeguyrfgwueyfgwe7y");
 			ViewData["LoggedOn"] = "admin";
 			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1) });
         }

@@ -1,6 +1,9 @@
-﻿function MakeAjaxRequest(username,password,confirmationPassword)
+﻿function MakeAjaxRequest()
 {
-	console.log(username)
+	let username = document.forms['AccountCreation'].elements['email']
+	let password = document.forms['AccountCreation'].elements['password']
+	let confirmationPassword = document.forms['AccountCreation'].elements['confirmPassword']
+	
 	console.log("ssdew")
 	let Credentials = {password: password, username: username,  passwordConfirmation: confirmationPassword};
 	$.ajax({
