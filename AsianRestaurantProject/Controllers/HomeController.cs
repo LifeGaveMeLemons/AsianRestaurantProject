@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Authentication;
 using Microsoft.Data.SqlClient;
+using NETCore.MailKit;
+using System.Security.Cryptography;
+using System.Text.Unicode;
+using System.Text;
 
 namespace AsianRestaurantProject.Controllers
 {
@@ -14,11 +18,36 @@ namespace AsianRestaurantProject.Controllers
 		{
 			_logger = logger;
 		}
+
 		[HttpPost]
-		public IActionResult GetCreationCedentials(AccountCreationModel credentials)
+		public IActionResult GetCreationCredentials(AccountCreationModel credentials)
 		{
-			Console.WriteLine("gvyt");
-			return null;
+			using (SqlConnection conn = new SqlConnection(connectionString))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("USE UserData INSERT INTO users (users.id,users.password,users.forename,users.lastname) VALUES (@email,@password,@name,@lastName)", conn))
+				{
+					byte[] salt = new byte[256];
+					RandomNumberGenerator rng = RandomNumberGenerator.Create();
+					rng.GetBytes(salt);
+					SHA256 hash = SHA256.Create();
+					byte[] arr = Encoding.Unicode.GetBytes(credentials.Password);
+					
+					command.Parameters.AddWithValue("@email", credentials.Email);
+
+					command.Parameters.AddWithValue("@password", credentials.Password);
+					command.Parameters.AddWithValue("@name", credentials.Forename);
+					command.Parameters.AddWithValue("@lastName", credentials.Lastname);
+					if (command.ExecuteNonQuery() == 0)
+					{
+						conn.Close();
+						return Content("no entry");
+					}
+					conn.Close();
+				}
+			}
+			return Content("200");
+
 		}
 		public IActionResult AccountCreation()
 		{

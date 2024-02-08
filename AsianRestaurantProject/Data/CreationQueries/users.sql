@@ -1,5 +1,5 @@
 ﻿USE UserData;
-CREATE TABLE Users
+CREATE TABLE users
 (
 gmail varchar(254) PRIMARY KEY NOT NULL,
 forename varchar(20),

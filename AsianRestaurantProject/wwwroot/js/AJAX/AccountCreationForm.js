@@ -1,26 +1,37 @@
-﻿function MakeAjaxRequest()
+﻿
+
+function MakeAjaxRequest()
 {
-	let username = document.forms['AccountCreation'].elements['email']
-	let password = document.forms['AccountCreation'].elements['password']
-	let confirmationPassword = document.forms['AccountCreation'].elements['confirmPassword']
-	
-	console.log("ssdew")
-	let Credentials = {password: password, username: username,  passwordConfirmation: confirmationPassword};
+	event.preventDefault()
+
+	let email = document.forms['AccountCreation'].elements['email'].value
+	let password = document.forms['AccountCreation'].elements['password'].value
+	let confirmationPassword = document.forms['AccountCreation'].elements['confirmPassword'].value
+	let name = document.forms['AccountCreation'].elements['foreName'].value
+	let lastname = document.forms['AccountCreation'].elements['lastName'].value
+	console.log(email)
+	console.log(password)
+	let credentials = { Password: password, Email: email, Forename: name, Lastname: lastname };
 	$.ajax({
 	type:"POST",
-		url:"/Home/GetCreationCedentials",
-		data: { credentials: Credentials },
+		url:"/Home/GetCreationCredentials",
+		data: { credentials: credentials },
 
 	success:function (response)
 	{
-		if(response == "success")
+		if(response == "200")
 		{
-			window.location("/Home/AddedPage")
+			document.getElementById("errorMessage").innerText = "success"
+			console.log("success")
+			console.log(response)
 		}
 		else
 		{
-			document.getElementById("guideTxt").innerText = response;
+			document.getElementById("errorMessage").innerText = "fail"
+			console.log("fail")
+			console.log(response)
 		}
+		return false;
 	}
 	})
 }
