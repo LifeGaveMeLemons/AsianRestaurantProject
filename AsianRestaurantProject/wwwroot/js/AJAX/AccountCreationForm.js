@@ -5,16 +5,12 @@ function MakeAjaxRequest()
 	event.preventDefault()
 
 	let email = document.forms['AccountCreation'].elements['email'].value
-	let password = document.forms['AccountCreation'].elements['password'].value
-	let confirmationPassword = document.forms['AccountCreation'].elements['confirmPassword'].value
-	let name = document.forms['AccountCreation'].elements['foreName'].value
-	let lastname = document.forms['AccountCreation'].elements['lastName'].value
 	console.log(email)
 	console.log(password)
 	let credentials = { Password: password, Email: email, Forename: name, Lastname: lastname };
 	$.ajax({
 	type:"POST",
-		url:"/Home/GetCreationCredentials",
+		url:"/Home/SendVerificationEmail",
 		data: { credentials: credentials },
 
 	success:function (response)

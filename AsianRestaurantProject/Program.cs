@@ -30,7 +30,11 @@ namespace AsianRestaurantProject
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 
-			app.Run();
+      app.MapControllerRoute(
+				name: "VerifyEmail",
+				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");
+
+      app.Run();
 		}
 	}
 }
