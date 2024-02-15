@@ -1,3 +1,5 @@
+using AsianRestaurantProject.Data;
+
 namespace AsianRestaurantProject
 {
 	public class Program
@@ -33,7 +35,7 @@ namespace AsianRestaurantProject
       app.MapControllerRoute(
 				name: "VerifyEmail",
 				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");
-
+			DataHolder.SetCryptoKey("hwiurhfewiurfh");
       app.Run();
 		}
 	}

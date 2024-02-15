@@ -107,7 +107,14 @@ namespace AsianRestaurantProject.Controllers
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
-      EmailVerificationModel
+      EmailVerificationModel data = new EmailVerificationModel();
+      data.Id = credentials.Email;
+      //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
+      byte[] randArr = new byte[32];
+      RandomNumberGenerator.Create().GetBytes(randArr);
+      data.RandNum = Encoding.Unicode.GetString(randArr);
+      data.ExpTime = DateTime.Now.ToOADate();
+      
       MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
       msg.To.Add(new MailboxAddress("lalalei", "borodinsnikita@gmail.com"));
