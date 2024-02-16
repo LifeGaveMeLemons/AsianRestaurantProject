@@ -128,7 +128,7 @@ namespace AsianRestaurantProject.Controllers
       
       MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
-      msg.To.Add(new MailboxAddress("lalalei", "nb934@student.aru.ac.uk"));
+      msg.To.Add(new MailboxAddress("lalalei", "nb934@student.aru.ac."));
       msg.Body = new TextPart("html") { Text = CreateEmail("sample","","") };
       using (SmtpClient client = new SmtpClient())
       {
