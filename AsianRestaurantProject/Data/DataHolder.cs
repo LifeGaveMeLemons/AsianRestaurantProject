@@ -11,7 +11,7 @@ namespace AsianRestaurantProject.Data
     public static void SetCryptoKey(string v)
     {
       SHA512 SHA512 = SHA512.Create();
-      key = SHA512.ComputeHash(Encoding.Unicode.GetBytes(v));
+      key = SHA256.HashData(Encoding.Unicode.GetBytes(v));
     }
     
   }

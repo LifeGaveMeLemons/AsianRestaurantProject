@@ -1,7 +1,7 @@
-﻿CREATE TABLE OngoingEmailVerifications
+﻿USE UserData
+CREATE TABLE OngoingEmailVerifications
 (
 	email VARCHAR(256) PRIMARY KEY,
-	AuthID VARBINARY(128),
 	AuthRNG VARBINARY(256),
 	ExpTime VARBINARY(64),
 	CryptoKey VARBINARY(512)

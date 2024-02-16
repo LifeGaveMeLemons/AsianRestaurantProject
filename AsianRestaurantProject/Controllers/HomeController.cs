@@ -107,17 +107,28 @@ namespace AsianRestaurantProject.Controllers
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
-      EmailVerificationModel data = new EmailVerificationModel();
-      data.Id = credentials.Email;
-      //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
-      byte[] randArr = new byte[32];
-      RandomNumberGenerator.Create().GetBytes(randArr);
-      data.RandNum = Encoding.Unicode.GetString(randArr);
-      data.ExpTime = DateTime.Now.ToOADate();
+          RandomNumberGenerator rng = RandomNumberGenerator.Create();
+          EmailVerificationModel data = new EmailVerificationModel();
+          data.Id = credentials.Email;
+          //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
+          data.RandNum = new byte[32];
+          rng.GetBytes(data.RandNum);
+          data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
+          byte[] ivBytes = new byte[16];
+          rng.GetBytes(ivBytes);
+          data.IV = ivBytes;
+
+
+          data.CreateKey();
+            SqlConnection conn = new SqlConnection(connectionString);
+
+
+          string v = JsonConvert.SerializeObject(data);
+            
       
       MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
-      msg.To.Add(new MailboxAddress("lalalei", "borodinsnikita@gmail.com"));
+      msg.To.Add(new MailboxAddress("lalalei", "nb934@student.aru.ac.uk"));
       msg.Body = new TextPart("html") { Text = CreateEmail("sample","","") };
       using (SmtpClient client = new SmtpClient())
       {
