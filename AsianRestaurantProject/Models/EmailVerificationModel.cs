@@ -33,6 +33,7 @@ namespace AsianRestaurantProject.Models
             command.Parameters.Add("@AuthRng", System.Data.SqlDbType.VarBinary, 32, Encoding.Default.GetString(RandNum));
             command.Parameters.Add("@ExpTime", System.Data.SqlDbType.VarBinary, 64, Encoding.Default.GetString(BitConverter.GetBytes(BitConverter.DoubleToInt64Bits(ExpTime))));
             command.Parameters.Add("@email", System.Data.SqlDbType.VarChar, 256, Id);
+      return command;
         }
   }
 }

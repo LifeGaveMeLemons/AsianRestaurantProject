@@ -99,28 +99,32 @@ namespace AsianRestaurantProject.Controllers
 
 		private readonly ILogger<HomeController> _logger;
 		private const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=UserData;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-		[HttpGet]
+		
 		public IActionResult ConfiremEmailVerificaiton(string data) 
 		{
-			return Content("");
+            Console.WriteLine(  "d");
+            return Content("");
 		}
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
-          RandomNumberGenerator rng = RandomNumberGenerator.Create();
-          EmailVerificationModel data = new EmailVerificationModel();
-          data.Id = credentials.Email;
-          //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
-          data.RandNum = new byte[32];
-          rng.GetBytes(data.RandNum);
-          data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
-          byte[] ivBytes = new byte[16];
-          rng.GetBytes(ivBytes);
-          data.IV = ivBytes;
+      RandomNumberGenerator rng = RandomNumberGenerator.Create();
+      EmailVerificationModel data = new EmailVerificationModel();
+      data.Id = credentials.Email;
+      //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
+      data.RandNum = new byte[32];
+      rng.GetBytes(data.RandNum);
+      data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
+      byte[] ivBytes = new byte[16];
+      rng.GetBytes(ivBytes);
+      data.IV = ivBytes;
 
 
-          data.CreateKey();
-            SqlConnection conn = new SqlConnection(connectionString);
+      data.CreateKey();
+      using (SqlConnection conn = new SqlConnection(connectionString))
+      {
+        SqlCommand cmd = data.GetQuery();
+      }
 
 
           string v = JsonConvert.SerializeObject(data);
