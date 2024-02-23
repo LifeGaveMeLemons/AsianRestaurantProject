@@ -34,12 +34,12 @@ namespace AsianRestaurantProject.Controllers
 {
 	public class HomeController : Controller
 	{
-    private string CreateEmail(string Name, string LastName, string url)
+    private string CreateEmail(string url)
     {
       return @"<!DOCTYPE html>
-          < html >
-          < head >
-              < style >
+          <html>
+          <head>
+              <style>
                   body {
                   font - family: Arial, sans - serif;
                 margin: 0;
@@ -76,18 +76,18 @@ namespace AsianRestaurantProject.Controllers
                 a {
                 color: #007bff;
                   }
-              </ style >
-          </ head >
-          < body >
-              < div class= 'container'>
+              </style>
+          </head>
+          <body>
+              <div class= 'container'>
                   <div class='header'>
                       <h2>Your Company Name</h2>
                   </div>
                   <div class='content'>
-                      <h3>Hello" + Name + @",</h3>
-                      <p>Thank you for [Action, e.g., signing up, making a purchase]. We're glad to have you with us. [Here you can add more details about the action or next steps.]</p>
-                      <p>If you have any questions or need further assistance, please feel free to contact us at[Your Contact Information].</p>
-                      <p>Best regards,<br>[Your Name or Your Company's Name]</p>
+                      <h3>Hello</h3>
+                      <p>this is  averification email for https:\//localhodt:7045</p>
+                      <a href='https://localhost:7045/Home/ConfirmEmailVerificaiton?data=" + url+@"'>Click here to verify your email</a>
+                      <p> if you did not create an account on this website with this email, please disregard this email</p>
                   </div>
                   <div class='footer'>
                       This is an automated message.Please do not reply directly to this email.For assistance, please contact us at[Your Contact Email].
@@ -100,31 +100,37 @@ namespace AsianRestaurantProject.Controllers
 		private readonly ILogger<HomeController> _logger;
 		private const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=UserData;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 		
-		public IActionResult ConfiremEmailVerificaiton(string data) 
+		public IActionResult ConfirmEmailVerificaiton(string data) 
 		{
-            Console.WriteLine(  "d");
-            return Content("");
+            Console.WriteLine("");
+            EmailVerificationModel v = JsonConvert.DeserializeObject<EmailVerificationModelIntermediate>(data).Normalize();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM", conn);
+            }
+            return View();
 		}
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
-      RandomNumberGenerator rng = RandomNumberGenerator.Create();
-      EmailVerificationModel data = new EmailVerificationModel();
-      data.Id = credentials.Email;
-      //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
-      data.RandNum = new byte[32];
-      rng.GetBytes(data.RandNum);
-      data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
-      byte[] ivBytes = new byte[16];
-      rng.GetBytes(ivBytes);
-      data.IV = ivBytes;
+          RandomNumberGenerator rng = RandomNumberGenerator.Create();
+          EmailVerificationModel data = new EmailVerificationModel();
+          data.Id = credentials.Email;
+          //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
+          data.RandNum = new byte[32];
+          rng.GetBytes(data.RandNum);
+          data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
+          byte[] ivBytes = new byte[16];
+          rng.GetBytes(ivBytes);
+          data.IV = ivBytes;
 
 
-      data.CreateKey();
-      using (SqlConnection conn = new SqlConnection(connectionString))
-      {
-        SqlCommand cmd = data.GetQuery();
-      }
+          data.CreateKey();
+          using (SqlConnection conn = new SqlConnection(connectionString))
+          {
+            SqlCommand cmd = data.GetQuery();
+                cmd.ExecuteNonQuery();
+          }
 
 
           string v = JsonConvert.SerializeObject(data);
@@ -132,13 +138,13 @@ namespace AsianRestaurantProject.Controllers
       
       MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
-      msg.To.Add(new MailboxAddress("lalalei", "nb934@student.aru.ac."));
-      msg.Body = new TextPart("html") { Text = CreateEmail("sample","","") };
+      msg.To.Add(new MailboxAddress("lalalei", credentials.Email));
+      msg.Body = new TextPart("html") { Text = CreateEmail(v) };
       using (SmtpClient client = new SmtpClient())
       {
         client.LocalDomain = "smtp.gmail.com";
         client.Connect("smtp.gmail.com", 587);
-        client.Authenticate("noreply.experimaentalsender@gmail.com", "umdtkhzoflcnhruw");
+        client.Authenticate("noreply.experimaentalsender@gmail.com", "anltahpmtckxmqrb");
         client.Send(msg);
         client.Disconnect(true);
 
@@ -152,8 +158,8 @@ namespace AsianRestaurantProject.Controllers
 
 
 
-      using (SqlConnection conn = new SqlConnection(connectionString))
-			{
+            using (SqlConnection conn = new SqlConnection(connectionString))
+	        {
 				conn.Open();
 				using (SqlCommand command = new SqlCommand("USE UserData INSERT INTO users (users.gmail,users.password,users.forename,users.lastname,users.salt) VALUES (@email,CONVERT(VARBINARY(512),@password),@Name,@lastName,CONVERT(VARBINARY(256),@salt))", conn))
 				{
