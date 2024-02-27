@@ -21,6 +21,16 @@ namespace AsianRestaurantProject.Models
     [JsonProperty("key")]
     public byte[] Key { get; set; } //512 bits
 
+    public bool CheckKey()
+    {
+      byte[] idArray = Encoding.Unicode.GetBytes("gcvcuuergihu");
+      byte[] expiryTimeArray = BitConverter.GetBytes(ExpTime);
+      byte[] concat = idArray.Concat(expiryTimeArray).Concat(RandNum).ToArray();
+      Aes crypt = Aes.Create();
+      crypt.Key = DataHolder.CryptoKey;
+      byte[] decryptedKey = crypt.DecryptCfb(Key, IV);
+      return concat.SequenceEqual(decryptedKey);
+    }
     public void CreateKey()
     {
       byte[] idArray = Encoding.Unicode.GetBytes("gcvcuuergihu");
@@ -29,9 +39,6 @@ namespace AsianRestaurantProject.Models
       Aes crypt = Aes.Create();
       crypt.Key = DataHolder.CryptoKey;
       Key = crypt.EncryptCfb(hash,IV);
-
-      
-
     }
     public SqlCommand GetQuery()
     {

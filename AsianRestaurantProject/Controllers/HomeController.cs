@@ -108,6 +108,9 @@ namespace AsianRestaurantProject.Controllers
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM", conn);
             }
+            //verify integrity
+
+            //compare SQL
             return View();
 		}
 		[HttpPost]
@@ -199,7 +202,10 @@ namespace AsianRestaurantProject.Controllers
 		{
 			Console.WriteLine("rkfjfiuherfuiyeguyrfgwueyfgwe7y");
 			ViewData["LoggedOn"] = "admin";
-			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1) });
+			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1),
+      new DataElementModel("smileee","smile",5f,2),
+      new DataElementModel("wireshark","yum!",5f,3),
+      new DataElementModel("explorer!","surf the internet!",5f,4)});
         }
 		private static string IsAuthenticated(IRequestCookieCollection cookies,IPAddress ip)
 		{
@@ -214,7 +220,14 @@ namespace AsianRestaurantProject.Controllers
 			AesEngine e = new AesEngine();
 		}
 
-
+    public IActionResult AboutUs()
+    {
+      return View();
+    }
+    public IActionResult ContactUs() 
+    {
+      return View();
+    }
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
