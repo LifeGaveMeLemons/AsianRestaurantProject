@@ -103,43 +103,44 @@ namespace AsianRestaurantProject.Controllers
 		public IActionResult ConfirmEmailVerificaiton(string data) 
 		{
             Console.WriteLine("");
-            EmailVerificationModel v = JsonConvert.DeserializeObject<EmailVerificationModelIntermediate>(data).Normalize();
+      EmailVerificationModel v = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
+
+            //verify integrity
+            if (v.CheckKey())
+            {
+                Console.WriteLine(  "ugv");
+            }
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM", conn);
+              SqlCommand cmd = new SqlCommand("SELECT * FROM", conn);
             }
-            //verify integrity
-
-            //compare SQL
-            return View();
+      //compare SQL
+      return View();
 		}
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
           RandomNumberGenerator rng = RandomNumberGenerator.Create();
-          EmailVerificationModel data = new EmailVerificationModel();
-          data.Id = credentials.Email;
+          EmailVerificationModel data = new EmailVerificationModel(credentials.Email);
+
           //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
-          data.RandNum = new byte[32];
-          rng.GetBytes(data.RandNum);
-          data.ExpTime = DateTime.Now.AddDays(1).ToOADate();
-          byte[] ivBytes = new byte[16];
-          rng.GetBytes(ivBytes);
-          data.IV = ivBytes;
+
+
 
 
           data.CreateKey();
-        using (SqlConnection conn = new SqlConnection(connectionString))
-        {
-          SqlCommand cmd = data.GetQuery();
-          cmd.ExecuteNonQuery();
-        }
+      //using (SqlConnection conn = new SqlConnection(connectionString))
+      //{
+      //  SqlCommand cmd = data.GetQuery();
+      //  cmd.ExecuteNonQuery();
+      //}
 
-
+      string b = Encoding.UTF8.GetString(ivBytes);
       string v = JsonConvert.SerializeObject(data);
-            
-      
-      MimeMessage msg = new MimeMessage();
+            Console.WriteLine(  "guy");
+
+
+            MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
       msg.To.Add(new MailboxAddress("lalalei", credentials.Email));
       msg.Body = new TextPart("html") { Text = CreateEmail(v) };
