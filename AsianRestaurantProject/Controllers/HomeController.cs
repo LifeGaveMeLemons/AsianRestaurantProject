@@ -129,14 +129,14 @@ namespace AsianRestaurantProject.Controllers
 
 
           data.CreateKey();
-          using (SqlConnection conn = new SqlConnection(connectionString))
-          {
-            SqlCommand cmd = data.GetQuery();
-                cmd.ExecuteNonQuery();
-          }
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+          SqlCommand cmd = data.GetQuery();
+          cmd.ExecuteNonQuery();
+        }
 
 
-          string v = JsonConvert.SerializeObject(data);
+      string v = JsonConvert.SerializeObject(data);
             
       
       MimeMessage msg = new MimeMessage();

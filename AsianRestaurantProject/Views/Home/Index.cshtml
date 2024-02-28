@@ -18,7 +18,7 @@
         }
         
         .item {
-          background-color:aqua;
+          background-color:crimson;
             align-items: center;
             display: flex;
             flex-direction: column;
@@ -40,7 +40,7 @@
         {
 
           <div class="column is-narrow">
-            <div class="card item">
+            <div class="card item" id="@($"card{element.ind}")">
                       <div class="card-image">
                         <figure class="image is-128x128">
                           <img src="@($"./Assets/FoodIcons/Food{element.ind.ToString()}.png")" alt="Placeholder image">
@@ -48,6 +48,7 @@
                       </div>
                       <div class="card-content">
                         <div class="content">
+                          <p><b>£@(element.cost) </b></p>
                           <p class="title is-4">@(element.name)</p>
                           <p>@(element.description)</p>
                           <div class="item-dial">

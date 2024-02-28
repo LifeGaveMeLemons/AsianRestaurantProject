@@ -7,3 +7,10 @@
 	margin:0px;
 	height:10%;
 }
+.is-primary
+{
+	background-color:crimson;
+}
+.button {
+	background-color: crimson;
+}
