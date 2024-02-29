@@ -129,7 +129,7 @@ namespace AsianRestaurantProject.Controllers
 
 
           data.CreateKey();
-      bool fd = data.CheckKey();
+      bool r = data.CheckKey();
       //using (SqlConnection conn = new SqlConnection(connectionString))
       //{
       //  SqlCommand cmd = data.GetQuery();
@@ -137,6 +137,7 @@ namespace AsianRestaurantProject.Controllers
       //}
 
       string v = JsonConvert.SerializeObject(data);
+      int len = v.Length;
             Console.WriteLine(  "guy");
 
 

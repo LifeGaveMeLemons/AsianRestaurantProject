@@ -67,6 +67,7 @@ namespace AsianRestaurantProject.Models
       byte[] randomNumber = new byte[32];
       rng.GetBytes(randomNumber);
       RandNum = EncodeByteArray(randomNumber);
+      byte[] c = DecodeStringArray(RandNum);
       //Set currebt time
       ExpTime = DateTime.Now.AddDays(1).ToOADate();
       //Generate a IV for encryption
@@ -75,6 +76,7 @@ namespace AsianRestaurantProject.Models
       IV = EncodeByteArray(ivBytes);
 
     }
+
     string EncodeByteArray(byte[] data)
     {
       char[] characters = data.Select(b => (char)b).ToArray();
