@@ -129,13 +129,13 @@ namespace AsianRestaurantProject.Controllers
 
 
           data.CreateKey();
+      bool fd = data.CheckKey();
       //using (SqlConnection conn = new SqlConnection(connectionString))
       //{
       //  SqlCommand cmd = data.GetQuery();
       //  cmd.ExecuteNonQuery();
       //}
 
-      string b = Encoding.UTF8.GetString(ivBytes);
       string v = JsonConvert.SerializeObject(data);
             Console.WriteLine(  "guy");
 

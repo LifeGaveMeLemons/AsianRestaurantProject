@@ -27,23 +27,26 @@ namespace AsianRestaurantProject.Models
       byte[] concat = GetUnhashedSignature();
       Aes crypt = Aes.Create();
       crypt.Key = DataHolder.CryptoKey;
-      byte[] decryptedKey = crypt.DecryptCfb(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(IV));
-      return concat.SequenceEqual(decryptedKey);
+
+      byte[] decryptedKey = crypt.DecryptCfb(DecodeStringArray(Key), GetInitializationVector());
+      byte[] hash = SHA512.HashData(concat);
+      return decryptedKey.SequenceEqual(hash);
     }
     public void CreateKey()
     {
       byte[] hash = SHA512.Create().ComputeHash(GetUnhashedSignature());
       Aes crypt = Aes.Create();
       crypt.Key = DataHolder.CryptoKey;
-      Key = Encoding.UTF8.GetString(crypt.EncryptCfb(hash,GetInitializationVector()));
+      Key = EncodeByteArray(crypt.EncryptCfb(hash,GetInitializationVector()));
     }
     private byte[] GetUnhashedSignature()
     {
-      return Encoding.UTF8.GetBytes(Id).Concat(BitConverter.GetBytes(ExpTime)).Concat(Encoding.UTF8.GetBytes(RandNum)).ToArray();
+      return DecodeStringArray(Id).Concat(BitConverter.GetBytes(ExpTime)).Concat(DecodeStringArray(RandNum)).ToArray();
     }
     private byte[] GetInitializationVector() 
     {
-      return Encoding.UTF8.GetBytes(IV);
+      byte[] iv = DecodeStringArray(IV);
+      return iv;
     }
     public SqlCommand GetQuery()
     {
@@ -63,14 +66,28 @@ namespace AsianRestaurantProject.Models
       //Generate random number
       byte[] randomNumber = new byte[32];
       rng.GetBytes(randomNumber);
-      RandNum = Encoding.UTF8.GetString(randomNumber);
+      RandNum = EncodeByteArray(randomNumber);
       //Set currebt time
       ExpTime = DateTime.Now.AddDays(1).ToOADate();
       //Generate a IV for encryption
       byte[] ivBytes = new byte[16];
       rng.GetBytes(ivBytes);
-      IV = Encoding.UTF8.GetString(ivBytes);
+      IV = EncodeByteArray(ivBytes);
 
+    }
+    string EncodeByteArray(byte[] data)
+    {
+      char[] characters = data.Select(b => (char)b).ToArray();
+      return new string(characters);
+    }
+    byte[] DecodeStringArray(string str)
+    {
+      byte[] bytes = new byte[str.Length];
+      for (int i = 0; i < str.Length; i++)
+      {
+        bytes[i] = (byte) str[i];
+      }
+      return bytes;
     }
   }
 }

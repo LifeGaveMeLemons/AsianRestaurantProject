@@ -1,0 +1,3 @@
+﻿function IncrementNumber() {
+	document.querySelector()
+}
