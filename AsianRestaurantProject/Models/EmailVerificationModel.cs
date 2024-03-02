@@ -1,4 +1,5 @@
 ﻿using AsianRestaurantProject.Data;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.ComponentModel;
@@ -37,30 +38,33 @@ namespace AsianRestaurantProject.Models
       byte[] hash = SHA512.Create().ComputeHash(GetUnhashedSignature());
       Aes crypt = Aes.Create();
       crypt.Key = DataHolder.CryptoKey;
-      Key = EncodeByteArray(crypt.EncryptCfb(hash,GetInitializationVector()));
+      Key = EncodeByteArray(crypt.EncryptCfb(hash, GetInitializationVector()));
     }
     private byte[] GetUnhashedSignature()
     {
-      return DecodeStringArray(Id).Concat(BitConverter.GetBytes(ExpTime)).Concat(DecodeStringArray(RandNum)).ToArray();
+      return DecodeStringArray(U8ToB64Email(Id)).Concat(BitConverter.GetBytes(ExpTime)).Concat(DecodeStringArray(RandNum)).ToArray();
     }
-    private byte[] GetInitializationVector() 
+    private byte[] GetInitializationVector()
     {
       byte[] iv = DecodeStringArray(IV);
       return iv;
     }
-    public SqlCommand GetQuery()
+    public SqlCommand GetInsertionQuery(SqlConnection conn)
     {
-        SqlCommand command = new SqlCommand("USE UserData INSERT INTO OngoingEmailVerifications (@email, @AuthRNG ,@ExpTime,CryptoKey VARBINARY(512) VALUES(@Email,CONVERT(VARBINARY(256) , @AuthRng),@ExpTime,CONVERT(VARBINARY(512),@CryptoKey) ))");
-            command.Parameters.Add("@email",System.Data.SqlDbType.VarChar,256,Id);
-            command.Parameters.Add("@AuthRng", System.Data.SqlDbType.VarBinary, 32, RandNum);
-            command.Parameters.Add("@ExpTime", System.Data.SqlDbType.VarBinary, 64, Encoding.Default.GetString(BitConverter.GetBytes(BitConverter.DoubleToInt64Bits(ExpTime))));
-            command.Parameters.Add("@email", System.Data.SqlDbType.VarChar, 256, Id);
-        return command;
-        }
+      SqlCommand command = new SqlCommand("USE userData; MERGE INTO OngoingEmailVerifications AS target USING (SELECT @Email AS Email, CONVERT(VARBINARY(256), @AuthRng) AS AuthRNG, @ExpTime AS ExpTime, CONVERT(VARBINARY(512), @CryptoKey) AS CryptoKey) AS source\r\nON (target.Email = source.Email) WHEN MATCHED THEN    UPDATE SET target.AuthRNG = source.AuthRNG,\r\n               target.ExpTime = source.ExpTime,\r\n               target.CryptoKey = source.CryptoKey\r\nWHEN NOT MATCHED BY TARGET THEN\r\n    INSERT (Email, AuthRNG, ExpTime, CryptoKey)\r\n    VALUES (source.Email, source.AuthRNG, source.ExpTime, source.CryptoKey);", conn);
+      command.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 256).Value = Id;
+      command.Parameters.Add("@AuthRng", System.Data.SqlDbType.VarBinary, 256).Value = Convert.FromBase64String(RandNum);
+      command.Parameters.Add("@ExpTime", System.Data.SqlDbType.VarBinary, 64).Value = BitConverter.GetBytes(BitConverter.DoubleToInt64Bits(ExpTime));
+      command.Parameters.Add("@CryptoKey", System.Data.SqlDbType.VarBinary, 512).Value = Convert.FromBase64String(Key);
+      return command;
+    }
     public EmailVerificationModel(string email)
     {
-      //Set User email
-      Id = email;
+      if (email != null)
+      {
+        //Set User email
+        Id = email;
+      }
       //Create RNG for use
       RandomNumberGenerator rng = RandomNumberGenerator.Create();
       //Generate random number
@@ -74,22 +78,46 @@ namespace AsianRestaurantProject.Models
       byte[] ivBytes = new byte[16];
       rng.GetBytes(ivBytes);
       IV = EncodeByteArray(ivBytes);
-
+      int l = IV.Length;
+      Console.OutputEncoding = Encoding.UTF8;
+      Console.WriteLine(IV);
     }
 
     string EncodeByteArray(byte[] data)
     {
-      char[] characters = data.Select(b => (char)b).ToArray();
-      return new string(characters);
+      return Convert.ToBase64String(data);
     }
-    byte[] DecodeStringArray(string str)
+    private byte[] DecodeStringArray(string str)
     {
-      byte[] bytes = new byte[str.Length];
-      for (int i = 0; i < str.Length; i++)
+      str = str.Replace(" ", "+");
+      return Convert.FromBase64String(str);
+    }
+
+    string U8ToB64Email(string email)
+    {
+      return Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
+    }
+    string B64ToU8Email(string email)
+    {
+      return Encoding.UTF8.GetString(Convert.FromBase64String(email));
+    }
+
+    public bool IsVerificationinDatabase(SqlConnection conn)
+    {
+      using (SqlCommand command = new SqlCommand("Use UserData SELECT * FROM OngoingEmailVerifications WHERE OngoingEmailVerifications.email = @gmail;", conn))
       {
-        bytes[i] = (byte) str[i];
+        command.Parameters.Add("@gmail", System.Data.SqlDbType.VarChar, 254).Value = Id;
+        using (SqlDataReader r = command.ExecuteReader())
+        {
+          r.Read();
+          string id = (string)r["Email"];
+          string authRng = Convert.ToBase64String((byte[])r["AuthRng"]);
+          double expiryTime = BitConverter.ToDouble((byte[])r["ExpTime"]);
+          string key = Convert.ToBase64String((byte[])r["CryptoKey"]);
+          r.Close();
+        }
+
       }
-      return bytes;
     }
   }
 }

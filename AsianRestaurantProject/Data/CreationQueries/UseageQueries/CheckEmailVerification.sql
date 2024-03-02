@@ -1,1 +1,1 @@
-﻿
+﻿Use UserData SELECT * FROM OngoingEmailVerifications WHERE OngoingEmailVerifications.email = @gmail;

@@ -29,6 +29,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace AsianRestaurantProject.Controllers
 {
@@ -89,6 +90,7 @@ namespace AsianRestaurantProject.Controllers
                       <a href='https://localhost:7045/Home/ConfirmEmailVerificaiton?data=" + url+@"'>Click here to verify your email</a>
                       <p> if you did not create an account on this website with this email, please disregard this email</p>
                   </div>
+                    "+ url +@"
                   <div class='footer'>
                       This is an automated message.Please do not reply directly to this email.For assistance, please contact us at[Your Contact Email].
                   </div>
@@ -98,21 +100,28 @@ namespace AsianRestaurantProject.Controllers
     }
 
 		private readonly ILogger<HomeController> _logger;
-		private const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=UserData;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+		private const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\borod\\source\\repos\\LifeGaveMeLemons\\AsianRestaurantProject\\AsianRestaurantProject\\Data\\Users\\UserDatabase.mdf;Integrated Security=True;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 		
 		public IActionResult ConfirmEmailVerificaiton(string data) 
 		{
-            Console.WriteLine("");
-      EmailVerificationModel v = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
+      EmailVerificationModel verificationData = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
 
             //verify integrity
-            if (v.CheckKey())
+            if (!verificationData.CheckKey())
             {
-                Console.WriteLine(  "ugv");
+              //Todo: handle invalid signature
+              return RedirectToAction("");
             }
+      
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-              SqlCommand cmd = new SqlCommand("SELECT * FROM", conn);
+              SqlCommand cmd = verificationData.GetRetrievalQuery(conn);
+              conn.Open();
+              cmd.ExecuteNonQuery();
+              using (SqlDataReader reader = cmd.ExecuteReader())
+              {
+              }
+        conn.Close();
             }
       //compare SQL
       return View();
@@ -120,28 +129,23 @@ namespace AsianRestaurantProject.Controllers
 		[HttpPost]
 		public IActionResult SendVerificationEmail(EmailModel credentials)
 		{
-          RandomNumberGenerator rng = RandomNumberGenerator.Create();
-          EmailVerificationModel data = new EmailVerificationModel(credentials.Email);
+        RandomNumberGenerator rng = RandomNumberGenerator.Create();
+        EmailVerificationModel data = new EmailVerificationModel(credentials.Email);
 
-          //AuthID will be obtained from the database bacause AUTOINCREMENT is used in the database
-
-
-
-
-          data.CreateKey();
-      bool r = data.CheckKey();
-      //using (SqlConnection conn = new SqlConnection(connectionString))
-      //{
-      //  SqlCommand cmd = data.GetQuery();
-      //  cmd.ExecuteNonQuery();
-      //}
+       data.CreateKey();
+      using (SqlConnection conn = new SqlConnection(connectionString))
+      {
+        
+        SqlCommand cmd = data.GetInsertionQuery(conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+      }
 
       string v = JsonConvert.SerializeObject(data);
-      int len = v.Length;
-            Console.WriteLine(  "guy");
 
-
-            MimeMessage msg = new MimeMessage();
+      MimeMessage msg = new MimeMessage();
       msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
       msg.To.Add(new MailboxAddress("lalalei", credentials.Email));
       msg.Body = new TextPart("html") { Text = CreateEmail(v) };
@@ -156,46 +160,40 @@ namespace AsianRestaurantProject.Controllers
         return Content("");
       }
     }
-		[HttpPost]
-		public IActionResult CreateAccounr(AccountCreationModel credentials)
-		{
+    public IActionResult CreateAccount(AccountCreationModel credentials)
+    {
+      using (SqlConnection conn = new SqlConnection(connectionString))
+      {
+        conn.Open();
+        using (SqlCommand command = new SqlCommand("USE UserData INSERT INTO users (users.gmail,users.password,users.forename,users.lastname,users.salt) VALUES (@email,CONVERT(VARBINARY(512),@password),@Name,@lastName,CONVERT(VARBINARY(256),@salt))", conn))
+        {
+          byte[] salt = new byte[256];
+          using (RandomNumberGenerator generator = RandomNumberGenerator.Create())
+          {
+            generator.GetBytes(salt);
+          }
+          byte[] preHash = salt.Concat(Encoding.Unicode.GetBytes(credentials.Password)).ToArray();
+          byte[] hash;
+          Rfc2898DeriveBytes hasher = new Rfc2898DeriveBytes(credentials.Password, salt, 1);
+          hash = hasher.GetBytes(64);
+          string a = Encoding.Default.GetString(hash);
 
-
-
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-	        {
-				conn.Open();
-				using (SqlCommand command = new SqlCommand("USE UserData INSERT INTO users (users.gmail,users.password,users.forename,users.lastname,users.salt) VALUES (@email,CONVERT(VARBINARY(512),@password),@Name,@lastName,CONVERT(VARBINARY(256),@salt))", conn))
-				{
-					byte[] salt = new byte[256];
-					using (RandomNumberGenerator generator = RandomNumberGenerator.Create())
-					{
-						generator.GetBytes(salt);
-					}
-					byte[] preHash = salt.Concat(Encoding.Unicode.GetBytes(credentials.Password)).ToArray();
-					byte[] hash;
-					Rfc2898DeriveBytes hasher = new Rfc2898DeriveBytes(credentials.Password,salt,1);
-					hash = hasher.GetBytes(64);
-
-					string a = Encoding.Default.GetString(hash);
-
-                    command.Parameters.AddWithValue("@email", credentials.Email);
-					command.Parameters.AddWithValue("@password", Encoding.Default.GetString(hash));
-					command.Parameters.AddWithValue("@salt", Encoding.Default.GetString(salt));
-					command.Parameters.AddWithValue("@name", credentials.Forename);
-					command.Parameters.AddWithValue("@lastName", credentials.Lastname);
-					if (command.ExecuteNonQuery() == 0)
-					{
-						conn.Close();
-						return Content("no entry");
-					}
-					conn.Close();
-				}
-			}
-			return Content("200");
-
-		}
+          command.Parameters.AddWithValue("@email", credentials.Email);
+          command.Parameters.AddWithValue("@password", Encoding.Default.GetString(hash));
+          command.Parameters.AddWithValue("@salt", Encoding.Default.GetString(salt));
+          command.Parameters.AddWithValue("@name", credentials.Forename);
+          command.Parameters.AddWithValue("@lastName", credentials.Lastname);
+          if (command.ExecuteNonQuery() == 0)
+          {
+            conn.Close();
+            return Content("no entry");
+          }
+          conn.Close();
+        }
+      }
+      return Content("200");
+    
+    }
 		public IActionResult AccountCreation()
 		{
 			return View();
