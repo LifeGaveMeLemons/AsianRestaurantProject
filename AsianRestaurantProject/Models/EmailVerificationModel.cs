@@ -102,7 +102,7 @@ namespace AsianRestaurantProject.Models
       return Encoding.UTF8.GetString(Convert.FromBase64String(email));
     }
 
-    public bool IsVerificationinDatabase(SqlConnection conn)
+    public DatabaseEmailVerificationDataModel CheckVerificationdatabase(SqlConnection conn)
     {
       using (SqlCommand command = new SqlCommand("Use UserData SELECT * FROM OngoingEmailVerifications WHERE OngoingEmailVerifications.email = @gmail;", conn))
       {
@@ -110,11 +110,14 @@ namespace AsianRestaurantProject.Models
         using (SqlDataReader r = command.ExecuteReader())
         {
           r.Read();
-          string id = (string)r["Email"];
-          string authRng = Convert.ToBase64String((byte[])r["AuthRng"]);
-          double expiryTime = BitConverter.ToDouble((byte[])r["ExpTime"]);
-          string key = Convert.ToBase64String((byte[])r["CryptoKey"]);
+          DatabaseEmailVerificationDataModel data = new DatabaseEmailVerificationDataModel(
+          email: (string)r["Email"],
+          randNum: Convert.ToBase64String((byte[])r["AuthRng"]),
+          expdate: BitConverter.ToDouble((byte[])r["ExpTime"]),
+          key: Convert.ToBase64String((byte[])r["CryptoKey"])
+          );
           r.Close();
+          return data;
         }
 
       }

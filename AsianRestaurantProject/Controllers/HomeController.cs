@@ -86,13 +86,14 @@ namespace AsianRestaurantProject.Controllers
                   </div>
                   <div class='content'>
                       <h3>Hello</h3>
-                      <p>this is  averification email for https:\//localhodt:7045</p>
+                      <p>this is  a verification email for https://localhodt:7045</p>
                       <a href='https://localhost:7045/Home/ConfirmEmailVerificaiton?data=" + url+@"'>Click here to verify your email</a>
-                      <p> if you did not create an account on this website with this email, please disregard this email</p>
+                      <p>if you did not create an account on this website with this email, please disregard this email</p>
                   </div>
-                    "+ url +@"
                   <div class='footer'>
-                      This is an automated message.Please do not reply directly to this email.For assistance, please contact us at[Your Contact Email].
+                      This is an automated message.Please do not reply directly to this email.For assistance, please contact us at:
+                      email: nb934@student.aru.ac.uk
+                      phone: +44 07716269154
                   </div>
               </div>
           </body>
@@ -104,26 +105,42 @@ namespace AsianRestaurantProject.Controllers
 		
 		public IActionResult ConfirmEmailVerificaiton(string data) 
 		{
-      EmailVerificationModel verificationData = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
+      EmailVerificationModel userVerificationData = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
 
-            //verify integrity
-            if (!verificationData.CheckKey())
-            {
-              //Todo: handle invalid signature
-              return RedirectToAction("");
-            }
-      
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-              SqlCommand cmd = verificationData.GetRetrievalQuery(conn);
-              conn.Open();
-              cmd.ExecuteNonQuery();
-              using (SqlDataReader reader = cmd.ExecuteReader())
-              {
-              }
-        conn.Close();
-            }
-      //compare SQL
+      //verify signature
+      if (!userVerificationData.CheckKey())
+      {
+        //Todo: handle invalid signature
+        return RedirectToAction("");
+      }
+      DatabaseEmailVerificationDataModel databaseVerificationData;
+      using(SqlConnection conn = new SqlConnection(connectionString)) 
+      {
+          conn.Open();
+				  databaseVerificationData = userVerificationData.CheckVerificationdatabase(conn);
+          conn.Close();
+			}
+      double currentTimeStamp = DateTime.Now.ToOADate();
+      //check timestamp
+      if (databaseVerificationData.Expdate !< currentTimeStamp)
+      {
+				//Todo: handle invalid signature
+				return RedirectToAction("");
+			}
+      //check random number integrity
+      if (databaseVerificationData.RandNum != userVerificationData.RandNum)
+      {
+				//Todo: handle invalid signature
+				return RedirectToAction("");
+			}
+
+			userVerificationData.Key = userVerificationData.Key.Replace(" ", "+");
+
+			if (databaseVerificationData.Key != userVerificationData.Key)
+      {
+				//Todo: handle invalid signature
+				return RedirectToAction("");
+			}
       return View();
 		}
 		[HttpPost]

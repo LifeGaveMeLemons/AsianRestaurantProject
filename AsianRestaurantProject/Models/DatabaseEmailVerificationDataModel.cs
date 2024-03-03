@@ -2,14 +2,17 @@
 {
 	public class DatabaseEmailVerificationDataModel
 	{
-		string Email { get; set; }
-		string RandNum { get; set; }
-		string Expdate { get; set; }
-		string Key { get; set; }
+		public string Email { get; set; }
+		public string RandNum { get; set; }
+		public double Expdate { get; set; }
+		public string Key { get; set; }
 
-		public DatabaseEmailVerificationDataModel(string email)
+		public DatabaseEmailVerificationDataModel(string email,string randNum, double expdate, string key)
 		{
-
+			Email = email;
+			RandNum = randNum;
+			Expdate = expdate;
+			Key = key;
 		}
 	}
 }
