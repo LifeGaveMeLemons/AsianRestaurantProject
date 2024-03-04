@@ -4,16 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AsianRestaurantProject</title>
-    <link rel="stylesheet" href="./css/Index.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
+    <link rel="stylesheet" href="~/css/Index.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
     <link rel="stylesheet" href="~/AsianRestaurantProject.styles.css" asp-append-version="true" />
+
 </head>
-<body>
+<body style="max-height:none; max-width:100%;">
     <header>
         <nav class="navbar" style="background-color:crimson;" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="#">
-                    <img src="./Assets/Icon/Untitled.png" width="50" height="50">
+                    <img src="./Assets/Icon/Icon.png" width="50" height="50">
                 </a>
 
                 <a role="button" class='navbar-burger' aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -63,14 +64,11 @@
             </div>
         </nav>
     </header>
-    <div>
-        <main role="main" >
+  <div style="	height:100%;">
+        <main role="main" style="	height:100%;">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="footer">
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

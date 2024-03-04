@@ -1,7 +1,10 @@
 ﻿body {
 	background-color: linear-gradient(red,cyan);
 }
-
+html, body {
+	margin: 0;
+	height: 100%;
+}
 .navbar{
 	background-color:white;
 	margin:0px;

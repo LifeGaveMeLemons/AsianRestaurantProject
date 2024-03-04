@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AsianRestaurantProject.Controllers
 {
@@ -82,7 +83,7 @@ namespace AsianRestaurantProject.Controllers
           <body>
               <div class= 'container'>
                   <div class='header'>
-                      <h2>Your Company Name</h2>
+                      <h2>Nikitas Company name(idk yet)</h2>
                   </div>
                   <div class='content'>
                       <h3>Hello</h3>
@@ -121,14 +122,19 @@ namespace AsianRestaurantProject.Controllers
           conn.Close();
 			}
       double currentTimeStamp = DateTime.Now.ToOADate();
+      if (databaseVerificationData.ExpTime != userVerificationData.ExpTime) 
+      {
+        return RedirectToAction("");
+      }
       //check timestamp
-      if (databaseVerificationData.Expdate !< currentTimeStamp)
+      if (databaseVerificationData.ExpTime !< currentTimeStamp)
       {
 				//Todo: handle invalid signature
 				return RedirectToAction("");
 			}
-      //check random number integrity
-      if (databaseVerificationData.RandNum != userVerificationData.RandNum)
+			//check random number integrity
+			userVerificationData.RandNum = userVerificationData.RandNum.Replace(" ", "+");
+			if (databaseVerificationData.RandNum != userVerificationData.RandNum)
       {
 				//Todo: handle invalid signature
 				return RedirectToAction("");
@@ -141,6 +147,7 @@ namespace AsianRestaurantProject.Controllers
 				//Todo: handle invalid signature
 				return RedirectToAction("");
 			}
+      ViewData["url"] = "data";
       return View();
 		}
 		[HttpPost]
@@ -163,7 +170,7 @@ namespace AsianRestaurantProject.Controllers
       string v = JsonConvert.SerializeObject(data);
 
       MimeMessage msg = new MimeMessage();
-      msg.From.Add(new MailboxAddress("c", "noreply.experimaentalsender@gmail.com"));
+      msg.From.Add(new MailboxAddress("Nikita Borodins", "noreply.experimaentalsender@gmail.com"));
       msg.To.Add(new MailboxAddress("lalalei", credentials.Email));
       msg.Body = new TextPart("html") { Text = CreateEmail(v) };
       using (SmtpClient client = new SmtpClient())
@@ -174,7 +181,7 @@ namespace AsianRestaurantProject.Controllers
         client.Send(msg);
         client.Disconnect(true);
 
-        return Content("");
+        return Content($"A email was sent to{credentials.Email}");
       }
     }
     public IActionResult CreateAccount(AccountCreationModel credentials)
@@ -217,6 +224,7 @@ namespace AsianRestaurantProject.Controllers
 		}
 		public IActionResult Index()
 		{
+     return RedirectToAction("AlternateIndex");
 			Console.WriteLine("rkfjfiuherfuiyeguyrfgwueyfgwe7y");
 			ViewData["LoggedOn"] = "admin";
 			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1),
@@ -224,7 +232,12 @@ namespace AsianRestaurantProject.Controllers
       new DataElementModel("wireshark","yum!",5f,3),
       new DataElementModel("explorer!","surf the internet!",5f,4)});
         }
-		private static string IsAuthenticated(IRequestCookieCollection cookies,IPAddress ip)
+    public IActionResult AlternateIndex()
+    {
+      return View();
+    }
+
+    private static string IsAuthenticated(IRequestCookieCollection cookies,IPAddress ip)
 		{
 			return "";
 			string data = cookies["auth"];

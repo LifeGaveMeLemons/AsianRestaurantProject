@@ -1,7 +1,16 @@
 ﻿<p> you made it!</p>
-	<form name="AccountCreation" onsubmit="MakeAjaxRequest()">
-	<script src="~/js/AJAX/AccountCreationForm.js"></script>
-	<div id="errorMessage">tst</div>
-	<input type="email" name="email" placeholder="E-Mail" />
+<script src="/js/AJAX/CreateAccountPassword.js"></script>
+<form name="AccountCreation" onsubmit="CreateUserWithPassword()">
+
+	<output></output>
+
+	<input type="password" name="password" placeholder="Password" id="password"/><br>
+	<output name="passwordValidation"></output>
+
+	<input type="password" name="confirmPassword" placeholder="Confirm Password" id="confirmPassword"/><br>
+	<output name="confirmPasswordValidation"></output>
+
+	<input type="hidden" name="url" contenteditable="false" value="@(ViewData["url"])"/>
+
 	<input type="submit" value="stuff"></input>
 </form>

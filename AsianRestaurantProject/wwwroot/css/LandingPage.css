@@ -1,0 +1,20 @@
+﻿div .delimiter {
+	width: 50%;
+	flex:1;
+	min-height:100vh;
+	box-sizing: border-box;
+}
+
+div #left {
+	background-image: linear-gradient(to right,rgba(3,28,50,0.40),rgba(3,28,50,0.85),rgba(3,28,50,1) ), url('../Assets/Other/LandingPage/SushiImage.webp');
+	background-size: cover;
+}
+
+
+div #right
+{
+	background-color: rgba(3,28,50,1)
+}
+.titleText{
+
+}

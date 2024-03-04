@@ -1,11 +1,11 @@
 ﻿
 
-function MakeAjaxRequest()
+function MakeAjaxRequest(e)
 {
-	event.preventDefault()
-
-	let email = document.forms['AccountCreation'].elements['email'].value
-	let credentials = {Email: email};
+	event.preventDefault();
+	let email = document.forms['VerifyEmail'].elements['email'].value;
+	let credentials = { Email: email };
+	console.log("dh")
 	$.ajax({
 	type:"POST",
 		url:"/Home/SendVerificationEmail",

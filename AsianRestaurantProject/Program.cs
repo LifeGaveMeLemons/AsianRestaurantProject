@@ -31,8 +31,9 @@ namespace AsianRestaurantProject
 			app.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
+			string localDbPath = $"{Environment.ProcessPath}Data\\Users\\UserDatabase.mdf";
 
-      app.MapControllerRoute(
+			app.MapControllerRoute(
 				name: "VerifyEmail",
 				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");
 			DataHolder.SetCryptoKey("hwiurhfewiurfh");
