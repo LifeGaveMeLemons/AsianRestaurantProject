@@ -17,3 +17,13 @@ html, body {
 .button {
 	background-color: crimson;
 }
+navbar-item :hover {
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+@keyframes navbar-item{
+	0%{linear-gradient(to top,rgba(0,0,0,0), rgba(0,0,0,0)}
+	100% {
+		linear-gradient(to top,rgba(0,0,0,1), rgba(0,0,0,0)
+	}
+}

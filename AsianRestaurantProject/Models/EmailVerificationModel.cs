@@ -22,6 +22,8 @@ namespace AsianRestaurantProject.Models
     [JsonProperty("key")]
     public string Key { get; set; } //512 bits
 
+    public string tst { get; set; }
+
     public bool CheckKey()
     {
       //Checks if recieved url's data signature is correct before commiting to IO
@@ -81,7 +83,10 @@ namespace AsianRestaurantProject.Models
       int l = IV.Length;
       Console.OutputEncoding = Encoding.UTF8;
       Console.WriteLine(IV);
-    }
+      tst = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/==";
+      byte[] bytes = Convert.FromBase64String(tst);
+            Console.WriteLine(  );
+        }
 
     string EncodeByteArray(byte[] data)
     {

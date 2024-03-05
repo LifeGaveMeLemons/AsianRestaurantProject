@@ -6,14 +6,18 @@
 }
 
 div #left {
-	background-image: linear-gradient(to right,rgba(3,28,50,0.40),rgba(3,28,50,0.85),rgba(3,28,50,1) ), url('../Assets/Other/LandingPage/SushiImage.webp');
-	background-size: cover;
-}
 
+	font-weight:normal;
+}
+div #main {
+	background-image: linear-gradient(to left, rgba(0,0,0,0.5),rgb(0, 0, 0,255)), url('../Assets/Other/LandingPage/SushiImage.webp');
+	background-size: cover;
+	padding-top: 7vh;
+	padding-left:5vw;
+}
 
 div #right
 {
-	background-color: rgba(3,28,50,1)
 }
 .titleText{
 
