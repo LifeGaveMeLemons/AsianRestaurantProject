@@ -36,6 +36,7 @@ namespace AsianRestaurantProject.Controllers
 {
 	public class HomeController : Controller
 	{
+    public static DataElementModel[] MenuItems;
     private string CreateEmail(string url)
     {
       return @"<!DOCTYPE html>
@@ -222,17 +223,13 @@ namespace AsianRestaurantProject.Controllers
 		{
 			return View();
 		}
-		public IActionResult Index()
+		public IActionResult Menu()
 		{
-     return RedirectToAction("AlternateIndex");
-			Console.WriteLine("rkfjfiuherfuiyeguyrfgwueyfgwe7y");
-			ViewData["LoggedOn"] = "admin";
-			return View(new List<DataElementModel>() { new DataElementModel("r", "r", 4f, 1),
-      new DataElementModel("smileee","smile",5f,2),
-      new DataElementModel("wireshark","yum!",5f,3),
-      new DataElementModel("explorer!","surf the internet!",5f,4)});
+     
+      return View(HomeController.MenuItems);
+
         }
-    public IActionResult AlternateIndex()
+    public IActionResult Index()
     {
       return View();
     }
@@ -263,5 +260,6 @@ namespace AsianRestaurantProject.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
+    
 	}
 }

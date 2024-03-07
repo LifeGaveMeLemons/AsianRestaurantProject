@@ -1,0 +1,27 @@
+[
+	{
+		"name": "salamon nigiri",
+		"description": "yummy",
+		"cost": 12.00,
+		"iid": 1
+	},
+	{
+		"name": "Tuna sashimi",
+		"description": "yummy",
+		"cost": 42.00,
+		"iid": 2
+	},
+	{
+		"name": "California Rolls",
+		"description": "yummy",
+		"cost": 42.00,
+		"iid": 3
+	},
+	{
+		"name": "Tempura Shrimps",
+		"description": "yummy",
+		"cost": 42.00,
+		"iid": 4
+	}
+
+]

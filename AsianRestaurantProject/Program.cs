@@ -1,4 +1,9 @@
+using AsianRestaurantProject.Controllers;
 using AsianRestaurantProject.Data;
+using AsianRestaurantProject.Models;
+using Microsoft.AspNetCore.Components.Forms;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace AsianRestaurantProject
 {
@@ -37,6 +42,7 @@ namespace AsianRestaurantProject
 				name: "VerifyEmail",
 				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");
 			DataHolder.SetCryptoKey("hwiurhfewiurfh");
+			HomeController.MenuItems = JsonConvert.DeserializeObject<DataElementModel[]>(File.ReadAllText(Environment.ProcessPath.Substring(0,Environment.ProcessPath.Length - 43) + "Data\\Items\\FoodItems.json"));
       app.Run();
 		}
 	}

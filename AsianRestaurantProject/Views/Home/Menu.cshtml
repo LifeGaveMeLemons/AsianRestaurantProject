@@ -1,0 +1,68 @@
+﻿@model AsianRestaurantProject.Models.DataElementModel[]
+
+  <style>
+        .item-dial {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f5f5f5;
+            border-radius: 20px;
+        }
+        
+        .item-dial button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .item {
+          background-color:crimson;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .item img {
+            margin-top:10px;
+            width: 128px;
+            height: 128px;
+        }
+    </style>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns is-multiline is-centered">
+      @{
+        foreach (DataElementModel element in Model)
+        {
+
+          <div class="column is-narrow">
+            <div class="card item" id="@($"card{element.Iid}")">
+                      <div class="card-image">
+                        <figure class="image is-128x128">
+                  <img src="@($"/Assets/FoodIcons/Food{element.Iid.ToString()}.jpg")" alt="Placeholder image">
+                        </figure>
+                      </div>
+                      <div class="card-content">
+                        <div class="content">
+                          <p><b>£@(element.Cost) </b></p>
+                          <p class="title is-4">@(element.Name)</p>
+                          <p>@(element.Description)</p>
+                          <div class="item-dial">
+                            <button aria-label="Decrease amount" onclick="">-</button>
+                            <span>0</span>
+                            <button aria-label="Increase amount">+</button>
+                          </div>
+                          <button class="button is-primary mt-4">Add to Basket</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+               }
+        </div>
+        </div>
+    </section>

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Items\" />
     <Folder Include="Data\Users\" />
     <Folder Include="wwwroot\Assets\Icon\" />
   </ItemGroup>

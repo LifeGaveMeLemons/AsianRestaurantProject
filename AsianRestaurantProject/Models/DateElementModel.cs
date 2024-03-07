@@ -1,17 +1,24 @@
-﻿namespace AsianRestaurantProject.Models
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
+namespace AsianRestaurantProject.Models
 {
     public class DataElementModel
     {
-        public string name;
-        public string description;
-        public float cost;
-        public int ind;
-        public DataElementModel(string name, string description, float cost, int ind)
+        [JsonProperty("Name")]
+        public string Name { get; }
+        [JsonProperty("Description")]
+        public string Description { get; }
+        [JsonProperty("Cost")]
+        public float Cost { get; }
+        [JsonProperty("iid")]
+        public int Iid { get; }
+        public DataElementModel(string name, string description, float cost, int iid)
         {
-            this.name = name;
-            this.description = description;
-            this.cost = cost;
-            this.ind = ind;
+            this.Name = name;
+            this.Description = description;
+            this.Cost = cost;
+            this.Iid = iid;
         }
     }
 }
