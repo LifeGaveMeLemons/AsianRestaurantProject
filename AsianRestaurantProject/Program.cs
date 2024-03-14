@@ -43,7 +43,7 @@ namespace AsianRestaurantProject
 				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");
 			DataHolder.SetCryptoKey("hwiurhfewiurfh");
 			HomeController.MenuItems = JsonConvert.DeserializeObject<DataElementModel[]>(File.ReadAllText(Environment.ProcessPath.Substring(0,Environment.ProcessPath.Length - 43) + "Data\\Items\\FoodItems.json"));
-      app.Run();
+			app.Run();
 		}
 	}
 }

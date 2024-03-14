@@ -13,6 +13,8 @@ namespace AsianRestaurantProject.Models
         public float Cost { get; }
         [JsonProperty("iid")]
         public int Iid { get; }
+        [JsonProperty("Quantity")]
+        public int Quantity{ get; }
         public DataElementModel(string name, string description, float cost, int iid)
         {
             this.Name = name;

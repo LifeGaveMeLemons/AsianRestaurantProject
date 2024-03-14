@@ -229,6 +229,13 @@ namespace AsianRestaurantProject.Controllers
       return View(HomeController.MenuItems);
 
         }
+
+    public IActionResult Basket()
+    {
+      string v = Request.Cookies["Basket"];
+
+			return View(JsonConvert.DeserializeObject<BasketItemModel[]>(Request.Cookies["Basket"]));
+    }
     public IActionResult Index()
     {
       return View();

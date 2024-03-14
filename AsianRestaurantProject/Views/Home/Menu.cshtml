@@ -31,38 +31,42 @@
             height: 128px;
         }
     </style>
-
+    <link rel="stylesheet" href="~/css/Menu.css"></link>
+    <script src="~/js/WebsiteActions/OrderingActions.js"></script>
     <section class="section">
         <div class="container">
             <div class="columns is-multiline is-centered">
-      @{
-        foreach (DataElementModel element in Model)
-        {
+      @{foreach (DataElementModel element in Model) {
 
           <div class="column is-narrow">
             <div class="card item" id="@($"card{element.Iid}")">
-                      <div class="card-image">
-                        <figure class="image is-128x128">
+              <div class="card-image">
+                <figure class="image is-128x128">
                   <img src="@($"/Assets/FoodIcons/Food{element.Iid.ToString()}.jpg")" alt="Placeholder image">
-                        </figure>
-                      </div>
-                      <div class="card-content">
-                        <div class="content">
-                          <p><b>£@(element.Cost) </b></p>
-                          <p class="title is-4">@(element.Name)</p>
-                          <p>@(element.Description)</p>
-                          <div class="item-dial">
-                            <button aria-label="Decrease amount" onclick="">-</button>
-                            <span>0</span>
-                            <button aria-label="Increase amount">+</button>
-                          </div>
-                          <button class="button is-primary mt-4">Add to Basket</button>
-                        </div>
-                      </div>
-                    </div>
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  <p><b>£@(element.Cost) </b></p>
+                  <p class="title is-4">@(element.Name)</p>
+                  <p class="item-description">@(element.Description)</p>
+                  <div class="item-dial">
+                  <button aria-label="Decrease amount" onclick="DecrementCounter('@("card" + element.Iid)')">-</button>
+                  <span>0</span>
+                  <button aria-label="Increase amount" onclick="IncrementCounter('@("card" + element.Iid)')">+</button>
                   </div>
-                }
-               }
+                  <button class="button is-primary mt-4" onclick="AddItemToBasket('@("card" + element.Iid)')">Add to Basket</button>
+                </div>
+              </div>
+            </div>
+          </div> } }
         </div>
         </div>
+          <div class="basket">
+            <button style="" id="deployBasket">Deoploy Basket</button>
+              <div style="">
+              <div class="basket-conttent">
+              </div>
+            </div>
+          </div>
     </section>

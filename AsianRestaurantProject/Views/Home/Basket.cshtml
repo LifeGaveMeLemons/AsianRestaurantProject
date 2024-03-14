@@ -1,0 +1,22 @@
+﻿@model AsianRestaurantProject.Models.DataElementModel[]
+
+<div class="background">
+	<div class="item-container">
+		@{
+			if (Model.Length == 0)
+			{
+				<div>
+					NoContentResult items in basket
+				</div>
+					}
+			foreach (var item in Model)
+			{
+				@(item.Name)
+				@(item.Quantity)
+				@(item.Cost)
+				@(item.Description)
+			}
+
+		}
+	</div>
+</div>

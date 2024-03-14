@@ -7,9 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\websiteactions\BasketActions.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\websiteactions\BasketActions.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Data\Items\" />
     <Folder Include="Data\Users\" />
     <Folder Include="wwwroot\Assets\Icon\" />
+    <Folder Include="wwwroot\js\WebsiteActions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\websiteactions\BasketActions.js" />
   </ItemGroup>
 
   <ItemGroup>
