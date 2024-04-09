@@ -8,11 +8,14 @@
 div #left {
 	font-weight: #031c32;
 }
-div #main {
+.background {
 	background-image: linear-gradient(to left, rgba(0,0,0,0.5),rgb(0, 0, 0,255)), url('../Assets/Other/LandingPage/SushiImage.webp');
-	background-size: cover;
-	padding-top: 7vh;
+	display: flex;
 	padding-left:5vw;
+	padding-top: 5vh;
+	background-color: black;
+	min-height: 100vh;
+	background-size: cover;
 }
 
 div #right

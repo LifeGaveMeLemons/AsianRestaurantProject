@@ -233,6 +233,10 @@ namespace AsianRestaurantProject.Controllers
     public IActionResult Basket()
     {
       string v = Request.Cookies["Basket"];
+      if (v ==null)
+      {
+        return View(new BasketItemModel[0]);
+      }
 
 			return View(JsonConvert.DeserializeObject<BasketItemModel[]>(Request.Cookies["Basket"]));
     }

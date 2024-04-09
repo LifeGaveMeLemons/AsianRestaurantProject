@@ -1,78 +1,94 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AsianRestaurantProject</title>
-    <link rel="stylesheet" href="~/css/Index.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
-    <link rel="stylesheet" href="~/AsianRestaurantProject.styles.css" asp-append-version="true" />
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - AsianRestaurantProject</title>
+  <link rel="stylesheet" href="~/css/Index.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <link rel="stylesheet" href="~/AsianRestaurantProject.styles.css" asp-append-version="true" />
 </head>
-<body style="max-height:none; max-width:100%;">
-    <header>
-    <nav class="navbar" style="background-color:#b3365b;" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item" asp-controller="Home" asp-action="Index">
-                    <img src="~/Assets/Icon/Icon.png" width="50" height="50">
-                </a>
+<body>
+  <header>
+    <nav class="navbar is-white" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" asp-controller="Home" asp-action="Index">
+          <img src="~/Assets/Icon/Icon.png" style="max-height: 10vh;">
+        </a>
 
-                <a role="button" class='navbar-burger' aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarMenu" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" asp-controller="Home" asp-action="Menu">
+            Menu
+          </a>
+          <a class="navbar-item" asp-controller="Home" asp-action="AboutUs">
+            About us
+          </a>
+          <a class="navbar-item" asp-controller="Home" asp-action="ContactUs">
+            Contact us
+          </a>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              More
+            </a>
+            <div class="navbar-dropdown">
+              @{
+                if (ViewData["LoggedOn"] == "user")
+                {
+                  <a class="navbar-item">
+                    Name Last Name<br>logged on
+                  </a>
+                }
+                else
+                {
+                  <a class="navbar-item" asp-controller="Home" asp-action="AccountCreation">
+                    Sign up
+                  </a>
+                  <a class="navbar-item">
+                    Log in
+                  </a>
+                  <a class="navbar-item" asp-controller="Home" asp-action="Basket">
+                    Basket
+                  </a>
+                }
+              }
             </div>
-
-            <div id="navbarBasicExample" class="navbar-menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" asp-controller="Home" asp-action="Menu">
-                        Menu
-                    </a>
-                    <a class="navbar-item" asp-controller="Home" asp-action="AboutUs">
-                        About us
-                    </a>
-                    <a class="navbar-item"asp-controller="Home" asp-action="ContactUs">
-                      Contact us
-                    </a>
-
-                    </div>
-                </div>
-
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        @{
-                            if (ViewData["LoggedOn"] == "user")
-                            {
-                            <div> Name Last Name\r\n    logged on</div>
-                            }
-                            else
-                            {
-                            <div class="buttons" id="user-profiles">
-                                <a class="button is-primary" asp-controller="Home" asp-action="AccountCreation">
-                                    <strong>Sign up</strong>
-                                </a>
-                                <a class="button is-light">
-                                    Log in
-                                </a>
-                                <a class="button is-primary" style="background-color:red;">
-                                  basket
-                                </a>
-                            </div>
-                            }
-                        }
-
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-  <div style="	height:100%;">
-        <main role="main" style="	height:100%;">
-            @RenderBody()
-        </main>
-    </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div style="min-height:100%;">
+    <main role="main" style="min-height:100%;">
+      @RenderBody()
+    </main>
+  </div>
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      if ($navbarBurgers.length > 0) {
+        $navbarBurgers.forEach(el => {
+          el.addEventListener('click', () => {
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
+      }
+    });
+  </script>
+  @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

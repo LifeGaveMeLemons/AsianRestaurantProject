@@ -1,22 +1,170 @@
-﻿@model AsianRestaurantProject.Models.DataElementModel[]
+﻿<script onload="getCookieValue()" src="~/js/WebsiteActions/BasketItemRemoval.js"></script>
+<style>
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
 
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+  .flex-container {
+    display: flex; /* Enables flexbox */
+    align-items: center; /* Align items vertically */
+    justify-content: space-between; /* Space between items */
+    margin-top: 20px; /* Adds margin at the top */
+  }
+
+  #sum {
+    margin-right: 10px; /* Adds some space before the button */
+  }
+</style>
 <div class="background">
-	<div class="item-container">
-		@{
-			if (Model.Length == 0)
-			{
-				<div>
-					NoContentResult items in basket
-				</div>
-					}
-			foreach (var item in Model)
-			{
-				@(item.Name)
-				@(item.Quantity)
-				@(item.Cost)
-				@(item.Description)
-			}
+  <div class="container">
+    <div class="section">
+      @if (Model.Length == 0)
+      {
+        <div class="notification is-primary">
+          No items in the basket.
+        </div>
+      }
+      else
+      {
+        <div  class="columns is-multiline">
+          @foreach (var item in Model)
+          {
+            <div id="@item.Iid" class="column is-4">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    @item.Name
+                  </p>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    <strong>Quantity:</strong> @item.Quantity <br>
+                    <strong>Price:</strong> £@item.Cost <br>
+                    <p>@item.Description</p>
+                  </div>
+                </div>
+                <footer class="card-footer">
+                  <a href="#" class="card-footer-item" onclick="removeBasketItem(@(item.Iid))">Remove</a>
+                </footer>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
 
-		}
-	</div>
+  <footer style="background-color: white; color: black; text-align: center; padding: 20px; font-family: Arial, sans-serif;">
+    <div class="flex-container">
+      <div>Total Price: £<div id="sum">0.00</div></div>
+      <button id="openModalBtn" class="button is-info">Enter Credit Card Info</button>
+    </div>
+    <div id="infoDisplay"></div>
+
+    <div id="creditCardModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <!-- Form inside the modal -->
+        <form id="creditCardForm">
+          <!-- Credit card form fields -->
+          <label for="cardName">Cardholder Name:</label>
+          <input type="text" id="cardName" name="cardName" autocomplete="cc-name" required><br><br>
+          <label for="cardNumber">Card Number:</label>
+          <input type="text" id="cardNumber" name="cardNumber" autocomplete="cc-number" required pattern="\d{16}"><br><br>
+          <label for="expiryMonth">Expiry Month:</label>
+          <input type="text" id="expiryMonth" name="expiryMonth" autocomplete="cc-exp-month" required pattern="\d{2}"><br><br>
+          <label for="expiryYear">Expiry Year:</label>
+          <input type="text" id="expiryYear" name="expiryYear" autocomplete="cc-exp-year" required pattern="\d{4}"><br><br>
+          <label for="cvv">CVV:</label>
+          <input type="text" id="cvv" name="cvv" autocomplete="cc-csc" required pattern="\d{3,4}"><br><br>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- The Modal -->
+
 </div>
+<script>
+  // Get modal element
+  var modal = document.getElementById("creditCardModal");
+  // Get open modal button
+  var btn = document.getElementById("openModalBtn");
+  // Get close button
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks the button, open the modal
+  btn.onclick = function () {
+    modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+    modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  // Extend the existing form submission handler
+  document.getElementById("creditCardForm").onsubmit = function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Capture form data
+    var cardName = document.getElementById('cardName').value;
+    var cardNumber = document.getElementById('cardNumber').value;
+    var expiryMonth = document.getElementById('expiryMonth').value;
+    var expiryYear = document.getElementById('expiryYear').value;
+    var cvv = document.getElementById('cvv').value;
+
+    // Display the captured data in a specified element
+    var infoDisplay = document.getElementById('infoDisplay'); // Ensure you have this element on your page
+    infoDisplay.innerHTML = `
+          <h2>Submitted Information</h2>
+          <p>Cardholder Name: ${cardName}</p>
+          <p>Card Number: ${cardNumber}</p>
+          <p>Expiry Date: ${expiryMonth}/${expiryYear}</p>
+          <p>CVV: ${cvv}</p>
+      `;
+
+    modal.style.display = "none"; // Close the modal
+  };
+</script>

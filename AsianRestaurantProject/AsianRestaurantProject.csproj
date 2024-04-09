@@ -18,7 +18,7 @@
     <Folder Include="Data\Items\" />
     <Folder Include="Data\Users\" />
     <Folder Include="wwwroot\Assets\Icon\" />
-    <Folder Include="wwwroot\js\WebsiteActions\" />
+    <Folder Include="wwwroot\Assets\Other\ContactUs\" />
   </ItemGroup>
 
   <ItemGroup>
