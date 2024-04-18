@@ -35,7 +35,7 @@ function calculateTotal(filteredItemsArray) {
     console.log(value[1].Quantity);
     acc += Number(value[1].Quantity) * Number(value[1].Cost);
   }
-  document.getElementById("sum").innerText = acc;
+  document.getElementById("sum").innerText = Math.round(acc *100)/100;
   
 }
 function calculateTotalStartup() {
@@ -51,7 +51,7 @@ function calculateTotalStartup() {
     console.log(acc)
   }
   console.log("hir");
-  document.getElementById("sum").innerText = String(acc);
+  document.getElementById("sum").innerText = Math.round(acc * 100) / 100;
 
 }
 

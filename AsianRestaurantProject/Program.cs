@@ -36,8 +36,9 @@ namespace AsianRestaurantProject
 			app.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
-			string localDbPath = $"{Environment.ProcessPath}Data\\Users\\UserDatabase.mdf";
+			string localDbPath = $"{Environment.ProcessPath.Substring(0,Environment.ProcessPath.Length- "\\bin\\Debug\\net6.0\\AsianRestaurantProject.exe".Length)}\\Data\\Users\\UserDatabase.mdf";
 
+			HomeController.connectionString = $"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={localDbPath};Integrated Security=True;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 			app.MapControllerRoute(
 				name: "VerifyEmail",
 				pattern: "{controller=Home}/{action=ConfiremEmailVerificaiton}/{id?}");

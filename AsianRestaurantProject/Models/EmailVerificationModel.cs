@@ -1,4 +1,5 @@
 ﻿using AsianRestaurantProject.Data;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
@@ -53,7 +54,7 @@ namespace AsianRestaurantProject.Models
     }
     public SqlCommand GetInsertionQuery(SqlConnection conn)
     {
-      SqlCommand command = new SqlCommand("USE userData; MERGE INTO OngoingEmailVerifications AS target USING (SELECT @Email AS Email, CONVERT(VARBINARY(256), @AuthRng) AS AuthRNG, @ExpTime AS ExpTime, CONVERT(VARBINARY(512), @CryptoKey) AS CryptoKey) AS source\r\nON (target.Email = source.Email) WHEN MATCHED THEN    UPDATE SET target.AuthRNG = source.AuthRNG,\r\n               target.ExpTime = source.ExpTime,\r\n               target.CryptoKey = source.CryptoKey\r\nWHEN NOT MATCHED BY TARGET THEN\r\n    INSERT (Email, AuthRNG, ExpTime, CryptoKey)\r\n    VALUES (source.Email, source.AuthRNG, source.ExpTime, source.CryptoKey);", conn);
+      SqlCommand command = new SqlCommand("MERGE INTO OngoingEmailVerifications AS target USING (SELECT @Email AS Email, CONVERT(VARBINARY(256), @AuthRng) AS AuthRNG, @ExpTime AS ExpTime, CONVERT(VARBINARY(512), @CryptoKey) AS CryptoKey) AS source\r\nON (target.Email = source.Email) WHEN MATCHED THEN    UPDATE SET target.AuthRNG = source.AuthRNG,\r\n               target.ExpTime = source.ExpTime,\r\n               target.CryptoKey = source.CryptoKey\r\nWHEN NOT MATCHED BY TARGET THEN\r\n    INSERT (Email, AuthRNG, ExpTime, CryptoKey)\r\n    VALUES (source.Email, source.AuthRNG, source.ExpTime, source.CryptoKey);", conn);
       command.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 256).Value = Id;
       command.Parameters.Add("@AuthRng", System.Data.SqlDbType.VarBinary, 256).Value = Convert.FromBase64String(RandNum);
       command.Parameters.Add("@ExpTime", System.Data.SqlDbType.VarBinary, 64).Value = BitConverter.GetBytes(BitConverter.DoubleToInt64Bits(ExpTime));
@@ -107,22 +108,30 @@ namespace AsianRestaurantProject.Models
       return Encoding.UTF8.GetString(Convert.FromBase64String(email));
     }
 
-    public DatabaseEmailVerificationDataModel CheckVerificationdatabase(SqlConnection conn)
+    public DatabaseEmailVerificationDataModel? CheckVerificationdatabase(SqlConnection conn)
     {
-      using (SqlCommand command = new SqlCommand("Use UserData SELECT * FROM OngoingEmailVerifications WHERE OngoingEmailVerifications.email = @gmail;", conn))
+      using (SqlCommand command = new SqlCommand("BEGIN TRANSACTION;\r\n\r\n\r\nSELECT * FROM OngoingEmailVerifications WHERE email = @gmail;\r\n\r\n\r\nDELETE FROM OngoingEmailVerifications WHERE email = @gmail;\r\n\r\nCOMMIT TRANSACTION;\r\n", conn))
       {
         command.Parameters.Add("@gmail", System.Data.SqlDbType.VarChar, 254).Value = Id;
         using (SqlDataReader r = command.ExecuteReader())
         {
-          r.Read();
-          DatabaseEmailVerificationDataModel data = new DatabaseEmailVerificationDataModel(
-          email: (string)r["Email"],
-          randNum: Convert.ToBase64String((byte[])r["AuthRng"]),
-          expdate: BitConverter.ToDouble((byte[])r["ExpTime"]),
-          key: Convert.ToBase64String((byte[])r["CryptoKey"])
-          );
-          r.Close();
-          return data;
+          try
+          {
+            r.Read();
+            DatabaseEmailVerificationDataModel data = new DatabaseEmailVerificationDataModel(
+            email: (string)r["Email"],
+            randNum: Convert.ToBase64String((byte[])r["AuthRng"]),
+            expdate: BitConverter.ToDouble((byte[])r["ExpTime"]),
+            key: Convert.ToBase64String((byte[])r["CryptoKey"])
+            );
+            r.Close();
+            return data;
+          }
+          catch(InvalidOperationException)
+          {
+            return null;
+          }
+
         }
 
       }

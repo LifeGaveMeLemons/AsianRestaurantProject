@@ -1,25 +1,26 @@
-﻿<script onload="getCookieValue()" src="~/js/WebsiteActions/BasketItemRemoval.js"></script>
+﻿
+<script onload="getCookieValue()" src="~/js/WebsiteActions/BasketItemRemoval.js"></script>
 <style>
   .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4);
   }
 
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-  }
+	.modal-content {
+		background-color: #fefefe;
+		margin: 15% auto;
+		padding: 20px;
+		border: 1px solid #888;
+		width: 80%
+	}
 
   .close {
     color: #aaa;
@@ -36,14 +37,14 @@
     }
 
   .flex-container {
-    display: flex; /* Enables flexbox */
-    align-items: center; /* Align items vertically */
-    justify-content: space-between; /* Space between items */
-    margin-top: 20px; /* Adds margin at the top */
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    margin-top: 20px; 
   }
 
   #sum {
-    margin-right: 10px; /* Adds some space before the button */
+    margin-right: 10px; 
   }
 </style>
 <div class="background">
@@ -93,12 +94,12 @@
     <div id="infoDisplay"></div>
 
     <div id="creditCardModal" class="modal">
-      <!-- Modal content -->
+     
       <div class="modal-content">
         <span class="close">&times;</span>
-        <!-- Form inside the modal -->
+        
         <form id="creditCardForm">
-          <!-- Credit card form fields -->
+         
           <label for="cardName">Cardholder Name:</label>
           <input type="text" id="cardName" name="cardName" autocomplete="cc-name" required><br><br>
           <label for="cardNumber">Card Number:</label>

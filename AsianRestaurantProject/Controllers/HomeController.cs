@@ -103,8 +103,7 @@ namespace AsianRestaurantProject.Controllers
     }
 
 		private readonly ILogger<HomeController> _logger;
-		private const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\borod\\source\\repos\\LifeGaveMeLemons\\AsianRestaurantProject\\AsianRestaurantProject\\Data\\Users\\UserDatabase.mdf;Integrated Security=True;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
-		
+    public static string connectionString;
 		public IActionResult ConfirmEmailVerificaiton(string data) 
 		{
       EmailVerificationModel userVerificationData = JsonConvert.DeserializeObject<EmailVerificationModel>(data);
@@ -115,11 +114,15 @@ namespace AsianRestaurantProject.Controllers
         //Todo: handle invalid signature
         return RedirectToAction("");
       }
-      DatabaseEmailVerificationDataModel databaseVerificationData;
+      DatabaseEmailVerificationDataModel? databaseVerificationData;
       using(SqlConnection conn = new SqlConnection(connectionString)) 
       {
           conn.Open();
 				  databaseVerificationData = userVerificationData.CheckVerificationdatabase(conn);
+          if (databaseVerificationData == null)
+          {
+            return RedirectToAction("");
+          }
           conn.Close();
 			}
       double currentTimeStamp = DateTime.Now.ToOADate();
@@ -178,7 +181,7 @@ namespace AsianRestaurantProject.Controllers
       {
         client.LocalDomain = "smtp.gmail.com";
         client.Connect("smtp.gmail.com", 587);
-        client.Authenticate("noreply.experimaentalsender@gmail.com", "anltahpmtckxmqrb");
+        client.Authenticate("noreply.experimaentalsender@gmail.com", "efwxnffeaquxboil");
         client.Send(msg);
         client.Disconnect(true);
 
